@@ -28,16 +28,16 @@ public abstract class MaterialBiblioteca
         return new string(codigo);
     }
 
-    public virtual void Prestar(int diasMax)
+    public virtual void Prestar(int dias) 
     {
         if (Estado == "Disponible")
         {
-            Estado = $"Prestado ({diasMax} días máx.)";
-            Console.WriteLine($"✅ {Titulo} ha sido prestado por {diasMax} días.");
+            Estado = $"Prestado ({dias} días máx.)";
+            Console.WriteLine($" {Titulo} ha sido prestado por {dias} días.");
         }
         else
         {
-            Console.WriteLine($"⚠️ {Titulo} ya está prestado.");
+            Console.WriteLine($" {Titulo} ya está prestado.");
         }
     }
 
@@ -46,20 +46,20 @@ public abstract class MaterialBiblioteca
         if (Estado.StartsWith("Prestado"))
         {
             Estado = "Disponible";
-            Console.WriteLine($"🔄 {Titulo} ha sido devuelto.");
+            Console.WriteLine($" {Titulo} ha sido devuelto.");
         }
         else
         {
-            Console.WriteLine($"⚠️ {Titulo} no estaba prestado.");
+            Console.WriteLine($" {Titulo} no estaba prestado.");
         }
     }
 
     public virtual void MostrarInfo()
     {
-        Console.WriteLine($"📖 Título: {Titulo}");
-        Console.WriteLine($"👤 Autor: {Autor}");
-        Console.WriteLine($"🔑 Código: {Codigo}");
-        Console.WriteLine($"📌 Estado: {Estado}");
+        Console.WriteLine($" Título: {Titulo}");
+        Console.WriteLine($" Autor: {Autor}");
+        Console.WriteLine($" Código: {Codigo}");
+        Console.WriteLine($" Estado: {Estado}");
     }
 }
 
@@ -81,7 +81,7 @@ public class LibroFisico : MaterialBiblioteca
     public override void MostrarInfo()
     {
         base.MostrarInfo();
-        Console.WriteLine($"📦 Ejemplar: {Ejemplar}");
+        Console.WriteLine($" Ejemplar: {Ejemplar}");
     }
 }
 
@@ -103,7 +103,7 @@ public class LibroDigital : MaterialBiblioteca
     public override void MostrarInfo()
     {
         base.MostrarInfo();
-        Console.WriteLine($"💾 Tamaño: {TamanoMB} MB");
+        Console.WriteLine($" Tamaño: {TamanoMB} MB");
     }
 }
 
@@ -125,62 +125,60 @@ class Program
 
             Console.Write("Seleccione una opción: ");
             string opcion = Console.ReadLine();
-
-            switch (opcion)
+            if(opcion == "1")
             {
-                case "1":
-                    Console.Write("Título: ");
-                    string tituloF = Console.ReadLine();
-                    Console.Write("Autor: ");
-                    string autorF = Console.ReadLine();
-                    Console.Write("Número de ejemplar: ");
-                    string ejemplar = Console.ReadLine();
-                    materiales.Add(new LibroFisico(tituloF, autorF, ejemplar));
-                    Console.WriteLine("✅ Libro físico registrado.");
-                    break;
-
-                case "2":
-                    Console.Write("Título: ");
-                    string tituloD = Console.ReadLine();
-                    Console.Write("Autor: ");
-                    string autorD = Console.ReadLine();
-                    Console.Write("Tamaño del archivo (MB): ");
-                    string tamano = Console.ReadLine();
-                    materiales.Add(new LibroDigital(tituloD, autorD, tamano));
-                    Console.WriteLine("✅ Libro digital registrado.");
-                    break;
-
-                case "3":
-                    Console.Write("Ingrese código del material: ");
-                    string codigoP = Console.ReadLine();
-                    var materialP = materiales.Find(m => m.Codigo == codigoP);
-                    if (materialP != null) materialP.Prestar(0);
-                    else Console.WriteLine("⚠️ Material no encontrado.");
-                    break;
-
-                case "4":
-                    Console.Write("Ingrese código del material: ");
+                Console.Write("Título: ");
+                string tituloF = Console.ReadLine();
+                Console.Write("Autor: ");
+                string autorF = Console.ReadLine();
+                Console.Write("Número de ejemplar: ");
+                string ejemplar = Console.ReadLine();
+                var libro = new LibroFisico(tituloF, autorF, ejemplar);
+                materiales.Add(libro);
+                Console.WriteLine($" Libro físico registrado con código: {libro.Codigo}");
+            }
+            else if(opcion == "2")
+            {
+                Console.Write("Título: ");
+                string tituloD = Console.ReadLine();
+                Console.Write("Autor: ");
+                string autorD = Console.ReadLine();
+                Console.Write("Tamaño del archivo (MB): ");
+                string tamano = Console.ReadLine();
+                var librod = new LibroDigital(tituloD, autorD, tamano);
+                materiales.Add(librod);
+                Console.WriteLine($" Libro digital registrado con codigo: {librod.Codigo}");
+            }
+            else if(opcion == "3")
+            {
+                Console.Write("Ingrese código del material: ");
+                string codigoP = Console.ReadLine();
+                var materialP = materiales.Find(m => m.Codigo == codigoP);
+                if (materialP != null) materialP.Prestar(0);
+                else Console.WriteLine(" Material no encontrado.");
+            }
+            else if(opcion == "4")
+            {
+                Console.Write("Ingrese código del material: ");
                     string codigoD = Console.ReadLine();
                     var materialD = materiales.Find(m => m.Codigo == codigoD);
                     if (materialD != null) materialD.Devolver();
-                    else Console.WriteLine("⚠️ Material no encontrado.");
-                    break;
-
-                case "5":
-                    Console.Write("Ingrese código del material: ");
+                    else Console.WriteLine(" Material no encontrado.");
+            }
+            else if (opcion == "5")
+            {
+                Console.Write("Ingrese código del material: ");
                     string codigoI = Console.ReadLine();
                     var materialI = materiales.Find(m => m.Codigo == codigoI);
                     if (materialI != null) materialI.MostrarInfo();
-                    else Console.WriteLine("⚠️ Material no encontrado.");
-                    break;
-
-                case "6":
-                    Console.WriteLine("👋 Saliendo del sistema...");
-                    return;
-
-                default:
-                    Console.WriteLine("⚠️ Opción inválida.");
-                    break;
+                    else Console.WriteLine(" Material no encontrado.");
+            } else if (opcion == "6")
+            {
+                Console.WriteLine(" Saliendo del sistema...");
+                Environment.Exit(0);
+            } else
+            {
+                Console.WriteLine(" Opción inválida.");
             }
         }
     }
